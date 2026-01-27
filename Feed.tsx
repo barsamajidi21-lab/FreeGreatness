@@ -1,4 +1,3 @@
-// Feed.tsx
 import { useQuery } from "@tanstack/react-query";
 import ContentCard from "./ContentCard"; 
 import { motion } from "framer-motion";
@@ -7,9 +6,15 @@ export default function Feed({ category }: { category: string }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["news", category],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/api/news/${category}`);
-      if (!res.ok) throw new Error("Server Down");
-      return res.json();
+      // STEP 1: We replaced the localhost:5000 link with the direct Mediastack URL
+      const apiKey = import.meta.env.VITE_MEDIASTACK_KEY;
+      const res = await fetch(`https://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`);
+      
+      if (!res.ok) throw new Error("API Connection Failed");
+      
+      const json = await res.json();
+      // Mediastack puts its articles inside a property called 'data'
+      return json.data; 
     },
   });
 
@@ -41,7 +46,7 @@ export default function Feed({ category }: { category: string }) {
       backgroundColor: 'rgba(255, 68, 68, 0.1)',
       fontFamily: 'monospace'
     }}>
-      [!] ERROR: INTEL_VULNERABILITY_DETECTED // SERVER_OFFLINE
+      [!] ERROR: INTEL_VULNERABILITY_DETECTED // API_OFFLINE
     </div>
   );
 
@@ -54,7 +59,7 @@ export default function Feed({ category }: { category: string }) {
         show: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.1 // This creates the "ripple" effect
+            staggerChildren: 0.1 
           }
         }
       }}
@@ -64,7 +69,8 @@ export default function Feed({ category }: { category: string }) {
         <ContentCard 
           key={i} 
           item={item} 
-          sourceUrl={item.intelUrl} 
+          // Mediastack uses 'url' instead of 'intelUrl'
+          sourceUrl={item.url} 
         />
       ))}
     </motion.div>
