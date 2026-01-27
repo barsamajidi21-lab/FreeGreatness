@@ -6,19 +6,25 @@ export default function Feed({ category }: { category: string }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["news", category],
     queryFn: async () => {
-      // STEP 1: We replaced the localhost:5000 link with the direct Mediastack URL
       const apiKey = import.meta.env.VITE_MEDIASTACK_KEY;
-      const res = await fetch(`https://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`);
       
+      // We use the HTTP version because Mediastack Free doesn't support HTTPS
+      const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`;
+      
+      // We use a CORS proxy because Vercel (HTTPS) blocks direct HTTP calls
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      
+      const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error("API Connection Failed");
       
       const json = await res.json();
-      // Mediastack puts its articles inside a property called 'data'
-      return json.data; 
+      // AllOrigins wraps the result in a 'contents' string that we must parse
+      const parsedData = JSON.parse(json.contents);
+      
+      return parsedData.data; 
     },
   });
 
-  // HIGH-TECH LOADING STATE
   if (isLoading) return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -36,7 +42,6 @@ export default function Feed({ category }: { category: string }) {
     </motion.div>
   );
 
-  // ERROR STATE
   if (error) return (
     <div style={{ 
       textAlign: 'center', 
@@ -69,7 +74,6 @@ export default function Feed({ category }: { category: string }) {
         <ContentCard 
           key={i} 
           item={item} 
-          // Mediastack uses 'url' instead of 'intelUrl'
           sourceUrl={item.url} 
         />
       ))}
