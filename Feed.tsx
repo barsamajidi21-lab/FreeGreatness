@@ -21,6 +21,9 @@ export default function Feed({ category }: { category: string }) {
       // AllOrigins wraps the result in a 'contents' string that we must parse
       const parsedData = JSON.parse(json.contents);
       
+      // Check if data exists in the response
+      if (!parsedData.data) throw new Error("No Data Found");
+      
       return parsedData.data; 
     },
   });
@@ -51,7 +54,7 @@ export default function Feed({ category }: { category: string }) {
       backgroundColor: 'rgba(255, 68, 68, 0.1)',
       fontFamily: 'monospace'
     }}>
-      [!] ERROR: INTEL_VULNERABILITY_DETECTED // API_OFFLINE
+      [!] ERROR: INTEL_VULNERABILITY_DETECTED // {error.message}
     </div>
   );
 
