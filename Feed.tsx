@@ -8,24 +8,40 @@ export default function Feed({ category }: { category: string }) {
     queryFn: async () => {
       const apiKey = import.meta.env.VITE_MEDIASTACK_KEY;
       
-      // We use the HTTP version because Mediastack Free doesn't support HTTPS
+      // Step 1: Define the insecure HTTP source (Mediastack's limitation)
       const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`;
       
-      // We use a CORS proxy because Vercel (HTTPS) blocks direct HTTP calls
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      // Step 2: Use AllOrigins proxy to bypass HTTPS security blocks on Vercel
+      // We add a timestamp to the URL to force fresh data and prevent caching
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&timestamp=${Date.now()}`;
       
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error("API Connection Failed");
       
       const json = await res.json();
-      // AllOrigins wraps the result in a 'contents' string that we must parse
-      const parsedData = JSON.parse(json.contents);
       
-      // Check if data exists in the response
-      if (!parsedData.data) throw new Error("No Data Found");
+      // Step 3: Parse the proxy contents string back into a real JavaScript object
+      let parsedData;
+      try {
+        parsedData = typeof json.contents === "string" ? JSON.parse(json.contents) : json.contents;
+      } catch (e) {
+        throw new Error("Data corruption during synchronization");
+      }
+      
+      // Step 4: Handle Mediastack-specific errors (like invalid keys)
+      if (parsedData.error) {
+        throw new Error(parsedData.error.message || "Access Denied");
+      }
+
+      // Step 5: Ensure data exists before returning
+      if (!parsedData.data || !Array.isArray(parsedData.data)) {
+        throw new Error("No intel streams found");
+      }
       
       return parsedData.data; 
     },
+    // Keep trying for a few seconds if it fails
+    retry: 1
   });
 
   if (isLoading) return (
@@ -54,7 +70,7 @@ export default function Feed({ category }: { category: string }) {
       backgroundColor: 'rgba(255, 68, 68, 0.1)',
       fontFamily: 'monospace'
     }}>
-      [!] ERROR: INTEL_VULNERABILITY_DETECTED // {error.message}
+      [!] ERROR: INTEL_VULNERABILITY_DETECTED // {error instanceof Error ? error.message.toUpperCase() : "OFFLINE"}
     </div>
   );
 
