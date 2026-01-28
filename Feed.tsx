@@ -7,22 +7,29 @@ export default function Feed({ category }: { category: string }) {
     queryKey: ["news", category],
     queryFn: async () => {
       const apiKey = "fb5888f12629e802a9245099692d1300"; 
-      const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`;
+      const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en&limit=30`;
       const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
       
       const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error("Connection failed");
-      
       const json = await res.json();
-      
-      // CRITICAL FIX: We MUST parse the 'contents' string into a real object
       const parsedData = JSON.parse(json.contents);
       
-      if (parsedData.error) throw new Error(parsedData.error.message || "API Error");
-      
-      // Mediastack returns the news in the 'data' array
-      return parsedData.data || [];
+      if (parsedData.error) throw new Error(parsedData.error.message);
+
+      const rawNews = parsedData.data || [];
+
+      // 1. REMOVE DUPLICATES: Only keep one version of the same title
+      const uniqueNews = rawNews.filter((item, index, self) =>
+        index === self.findIndex((t) => t.title === item.title)
+      );
+
+      // 2. QUALITY FILTER: Hide news with descriptions shorter than 40 characters
+      return uniqueNews.filter(item => item.description && item.description.length > 40);
     },
+    // BUDGET PROTECTION: Only fetch ONCE. No auto-refreshing.
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    retry: false 
   });
 
   if (isLoading) return (
