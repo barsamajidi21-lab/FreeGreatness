@@ -41,6 +41,15 @@ export default function ContentCard({ item, sourceUrl }: { item: any, sourceUrl:
         }}
       />
 
+      {/* Image Support: Mediastack uses 'image' */}
+      {item.image && (
+        <img 
+          src={item.image} 
+          alt="intel_visual" 
+          style={{ width: '100%', height: '200px', objectFit: 'cover', marginBottom: '15px', border: '1px solid #00d4ff' }} 
+        />
+      )}
+
       <span style={{ 
         fontWeight: 'bold', 
         color: '#00d4ff', 
@@ -59,7 +68,8 @@ export default function ContentCard({ item, sourceUrl }: { item: any, sourceUrl:
         textTransform: 'uppercase',
         letterSpacing: '-0.5px'
       }}>
-        {item.headline || 'NO DATA'}
+        {/* FIX: Use item.title for Mediastack */}
+        {item.title || 'NO DATA'}
       </h2>
 
       <p style={{ 
@@ -68,7 +78,8 @@ export default function ContentCard({ item, sourceUrl }: { item: any, sourceUrl:
         color: '#a0a0b0',
         marginBottom: '20px' 
       }}>
-        {item.summary}
+        {/* FIX: Use item.description for Mediastack */}
+        {item.description}
       </p>
       
       <div style={{ 
@@ -77,14 +88,16 @@ export default function ContentCard({ item, sourceUrl }: { item: any, sourceUrl:
         justifyContent: 'space-between', 
         alignItems: 'center',
         borderTop: '1px solid rgba(255,255,255,0.1)',
-        paddingTop: '15px'
+        padding: '15px'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <small style={{ color: '#00d4ff', fontWeight: 'bold', fontSize: '9px' }}>
-            ORIGIN: {item.leader}
+            {/* FIX: Use item.source or item.author */}
+            ORIGIN: {item.source || item.author || 'SECURE_CHANNEL'}
           </small>
           <small style={{ color: '#505060', fontSize: '9px' }}>
-            TS: {item.publishedAt ? new Date(item.publishedAt).getTime() : 'UNKNOWN'}
+            {/* FIX: Use item.published_at for Mediastack */}
+            TS: {item.published_at ? new Date(item.published_at).toLocaleString() : 'UNKNOWN'}
           </small>
         </div>
         
