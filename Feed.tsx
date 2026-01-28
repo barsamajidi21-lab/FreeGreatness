@@ -3,11 +3,15 @@ import ContentCard from "./ContentCard";
 import { motion } from "framer-motion";
 
 export default function Feed({ category }: { category: string }) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["news", category],
+  const { data: allNews, isLoading, error } = useQuery({
+    queryKey: ["bulk-intel-stream"],
     queryFn: async () => {
-      const apiKey = "fb5888f12629e802a9245099692d1300"; 
-      const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en&limit=30`;
+      // NEW API KEY APPLIED
+      const apiKey = "87e232ce9616043677a828f7c81790f5"; 
+      
+      // BULK REQUEST: Fetching all categories in 1 hit to save credits
+      const categories = "general,business,entertainment,health,science,sports,technology";
+      const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${categories}&languages=en&limit=100`;
       const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
       
       const res = await fetch(proxyUrl);
@@ -18,23 +22,26 @@ export default function Feed({ category }: { category: string }) {
 
       const rawNews = parsedData.data || [];
 
-      // 1. REMOVE DUPLICATES: Only keep one version of the same title
-      const uniqueNews = rawNews.filter((item, index, self) =>
-        index === self.findIndex((t) => t.title === item.title)
+      // CLEANING: Remove duplicates and news with no real description
+      return rawNews.filter((item, index, self) =>
+        index === self.findIndex((t) => t.title === item.title) &&
+        (item.description && item.description.length > 40)
       );
-
-      // 2. QUALITY FILTER: Hide news with descriptions shorter than 40 characters
-      return uniqueNews.filter(item => item.description && item.description.length > 40);
     },
-    // BUDGET PROTECTION: Only fetch ONCE. No auto-refreshing.
+    // LOCK DOWN: Do not refetch unless the page is manually refreshed
     staleTime: Infinity, 
     refetchOnWindowFocus: false,
-    retry: false 
+    retry: false
   });
+
+  // LOCAL FILTERING: Switching categories here uses 0 credits
+  const filteredData = allNews?.filter(item => 
+    category === "general" ? true : item.category === category
+  ) || [];
 
   if (isLoading) return (
     <div style={{ textAlign: 'center', padding: '100px', color: '#00d4ff', fontFamily: 'monospace' }}>
-      &gt; SYNCHRONIZING_MEDIASTACK_INTEL...
+      &gt; EXECUTING_SINGLE_STRAT_GATHERING...
     </div>
   );
 
@@ -46,9 +53,15 @@ export default function Feed({ category }: { category: string }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'grid', gap: '25px' }}>
-      {data?.map((item: any, i: number) => (
-        <ContentCard key={i} item={item} sourceUrl={item.url} />
-      ))}
+      {filteredData.length > 0 ? (
+        filteredData.map((item: any, i: number) => (
+          <ContentCard key={i} item={item} sourceUrl={item.url} />
+        ))
+      ) : (
+        <div style={{ color: '#505060', textAlign: 'center', padding: '50px', fontFamily: 'monospace' }}>
+          &gt; NO_DATA_IN_CURRENT_BUFFER: {category.toUpperCase()}
+        </div>
+      )}
     </motion.div>
   );
 }
