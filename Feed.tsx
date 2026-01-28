@@ -6,13 +6,8 @@ export default function Feed({ category }: { category: string }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["news", category],
     queryFn: async () => {
-      // 1. YOUR VERIFIED MEDIASTACK KEY
       const apiKey = "fb5888f12629e802a9245099692d1300"; 
-      
-      // 2. THE TARGET URL (Mediastack Free uses HTTP)
       const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${category}&languages=en`;
-      
-      // 3. THE PROXY (Essential for live Vercel sites)
       const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
       
       const res = await fetch(proxyUrl);
@@ -20,10 +15,12 @@ export default function Feed({ category }: { category: string }) {
       
       const json = await res.json();
       
-      // 4. PARSE THE DATA
-      const parsedData = typeof json.contents === "string" ? JSON.parse(json.contents) : json.contents;
+      // CRITICAL FIX: We MUST parse the 'contents' string into a real object
+      const parsedData = JSON.parse(json.contents);
       
       if (parsedData.error) throw new Error(parsedData.error.message || "API Error");
+      
+      // Mediastack returns the news in the 'data' array
       return parsedData.data || [];
     },
   });
