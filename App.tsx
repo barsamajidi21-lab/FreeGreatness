@@ -1,4 +1,4 @@
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense } from "react";
 import Feed from "./Feed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LanguageContext } from "./LanguageContext";
@@ -8,7 +8,7 @@ import { OrbitControls, Sphere, MeshDistortMaterial, Float, Html } from "@react-
 
 const queryClient = new QueryClient();
 
-// --- THE HOOK: EARTH WITH PROVOCATIVE QUESTIONS ---
+// --- THE HOOK: EARTH WITH 20 PROVOCATIVE QUESTIONS ---
 const RotatingEarth = () => {
   const questions = [
     "WILL AI REDEFINE YOUR BIOLOGY?",
@@ -16,7 +16,21 @@ const RotatingEarth = () => {
     "TRUMP'S NEXT MOVE: GLOBAL IMPACT?",
     "CRYPTO BLEEDING: THE FINAL SHAKEOUT?",
     "LIFE-CHANGING TECH: ARE YOU READY?",
-    "PROTESTS & POWER: THE NEW WORLD ORDER?"
+    "PROTESTS & POWER: THE NEW WORLD ORDER?",
+    "IS PRIVACY OFFICIALLY DEAD?",
+    "NEXT GEN ENERGY: FUSION OR FAILURE?",
+    "CAN WE REVERSE AGING BY 2030?",
+    "THE DOLLAR'S FATE: WHAT'S NEXT?",
+    "MARS COLONIZATION: REALITY CHECK?",
+    "QUANTUM COMPUTING: END OF ENCRYPTION?",
+    "THE RISE OF THE SEABOARD MEGALOPOLIS?",
+    "GENETIC EDITING: THE DESIGNER ERA?",
+    "DEEPFAKES: CAN WE TRUST OUR EYES?",
+    "THE FUTURE OF WORK: 4-DAY WEEKS?",
+    "AI GOVERNANCE: WHO IS IN CONTROL?",
+    "UNIVERSAL BASIC INCOME: THE CURE?",
+    "NEURALINK: CONNECTING TO THE GRID?",
+    "THE END OF SCARCITY: PRINTING FOOD?"
   ];
 
   return (
@@ -35,37 +49,41 @@ const RotatingEarth = () => {
                 roughness={0.1}
                 metalness={0.9}
               />
-              {/* Floating Provocative Questions */}
               {questions.map((q, i) => (
                 <Html
                   key={i}
                   position={[
                     Math.cos((i / questions.length) * Math.PI * 2) * 3.5,
-                    Math.sin((i / questions.length) * Math.PI * 2) * 2,
-                    0
+                    Math.sin((i / questions.length) * Math.PI * 2) * 2.5,
+                    Math.sin((i / questions.length) * Math.PI) * 1.5
                   ]}
                   center
                 >
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: [0, 1, 1, 0], scale: [0.8, 1, 1, 0.8] }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ 
+                      opacity: [0, 1, 1, 0], 
+                      scale: [0.9, 1, 1, 0.9] 
+                    }}
                     transition={{
-                      duration: 4,
+                      duration: 3, // Total cycle
                       repeat: Infinity,
-                      delay: i * 2,
-                      ease: "easeInOut"
+                      delay: i * 2, // 2-second interval sequence
+                      ease: "easeInOut",
+                      times: [0, 0.1, 0.8, 1] // Locks the "hold" for 2 seconds
                     }}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.9)',
-                      padding: '10px 20px',
-                      borderRadius: '12px',
-                      boxShadow: '0 10px 25px rgba(0,168,255,0.2)',
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      padding: '12px 24px',
+                      borderRadius: '15px',
+                      boxShadow: '0 10px 30px rgba(0,168,255,0.25)',
                       border: '1px solid #00a8ff',
                       whiteSpace: 'nowrap',
                       color: '#1a1a1a',
                       fontWeight: '900',
-                      fontSize: '12px',
-                      letterSpacing: '1px'
+                      fontSize: '13px',
+                      letterSpacing: '1px',
+                      backdropFilter: 'blur(5px)'
                     }}
                   >
                     {q}
@@ -120,7 +138,15 @@ export default function App() {
           <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
             
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '60px' }}>
-              <div className="search-wrapper"><input type="text" placeholder="Search global data..." className="shining-search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/></div>
+              <div className="search-wrapper">
+                <input 
+                  type="text" 
+                  placeholder="Search global data..." 
+                  className="shining-search" 
+                  value={searchQuery} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -136,7 +162,6 @@ export default function App() {
                     </p>
                   </div>
                   
-                  {/* UPDATED COOL BUTTON */}
                   <button onClick={() => setView("intelligence")} style={{
                     marginTop: '60px', padding: '22px 70px', backgroundColor: '#00a8ff', color: '#fff', 
                     borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '16px',
