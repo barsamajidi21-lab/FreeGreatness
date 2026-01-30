@@ -2,14 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import ContentCard from "./ContentCard"; 
 import { motion } from "framer-motion";
 
-export default function Feed({ category }: { category: string }) {
+// Added searchBarQuery to the props
+export default function Feed({ category, searchBarQuery }: { category: string, searchBarQuery: string }) {
   const { data: allNews, isLoading, error } = useQuery({
     queryKey: ["bulk-intel-stream"],
     queryFn: async () => {
-      // NEW API KEY APPLIED
       const apiKey = "87e232ce9616043677a828f7c81790f5"; 
-      
-      // BULK REQUEST: Fetching all categories in 1 hit to save credits
       const categories = "general,business,entertainment,health,science,sports,technology";
       const targetUrl = `http://api.mediastack.com/v1/news?access_key=${apiKey}&categories=${categories}&languages=en&limit=100`;
       const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
@@ -22,32 +20,35 @@ export default function Feed({ category }: { category: string }) {
 
       const rawNews = parsedData.data || [];
 
-      // CLEANING: Remove duplicates and news with no real description
-      return rawNews.filter((item, index, self) =>
+      return rawNews.filter((item: any, index: number, self: any[]) =>
         index === self.findIndex((t) => t.title === item.title) &&
         (item.description && item.description.length > 40)
       );
     },
-    // LOCK DOWN: Do not refetch unless the page is manually refreshed
     staleTime: Infinity, 
     refetchOnWindowFocus: false,
     retry: false
   });
 
-  // LOCAL FILTERING: Switching categories here uses 0 credits
-  const filteredData = allNews?.filter(item => 
-    category === "general" ? true : item.category === category
-  ) || [];
+  // --- ENHANCED FILTERING ---
+  // This now checks BOTH the Category AND the Search Bar text
+  const filteredData = allNews?.filter(item => {
+    const matchesCategory = category === "general" ? true : item.category === category;
+    const matchesSearch = item.title.toLowerCase().includes(searchBarQuery.toLowerCase()) || 
+                         (item.description && item.description.toLowerCase().includes(searchBarQuery.toLowerCase()));
+    
+    return matchesCategory && matchesSearch;
+  }) || [];
 
   if (isLoading) return (
-    <div style={{ textAlign: 'center', padding: '100px', color: '#00d4ff', fontFamily: 'monospace' }}>
-      &gt; EXECUTING_SINGLE_STRAT_GATHERING...
+    <div style={{ textAlign: 'center', padding: '100px', color: '#00a8ff', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+      Gathering Intelligence...
     </div>
   );
 
   if (error) return (
-    <div style={{ textAlign: 'center', color: '#ff4444', padding: '50px', border: '1px solid #ff4444', fontFamily: 'monospace' }}>
-      [!] ERROR: {error instanceof Error ? error.message.toUpperCase() : "INTEL_LINK_BROKEN"}
+    <div style={{ textAlign: 'center', color: '#ff4444', padding: '50px', borderRadius: '20px', background: '#fff' }}>
+      [!] CONNECTION ERROR: {error instanceof Error ? error.message.toUpperCase() : "INTEL_LINK_BROKEN"}
     </div>
   );
 
@@ -58,8 +59,8 @@ export default function Feed({ category }: { category: string }) {
           <ContentCard key={i} item={item} sourceUrl={item.url} />
         ))
       ) : (
-        <div style={{ color: '#505060', textAlign: 'center', padding: '50px', fontFamily: 'monospace' }}>
-          &gt; NO_DATA_IN_CURRENT_BUFFER: {category.toUpperCase()}
+        <div style={{ color: '#636e72', textAlign: 'center', padding: '100px', background: 'white', borderRadius: '30px' }}>
+          No intelligence found matching: "{searchBarQuery}"
         </div>
       )}
     </motion.div>
