@@ -8,30 +8,23 @@ import { OrbitControls, Sphere, MeshDistortMaterial, Float, Html } from "@react-
 
 const queryClient = new QueryClient();
 
-// --- THE HOOK: EARTH WITH 20 PROVOCATIVE QUESTIONS ---
+// --- THE HOOK: SYNCED PAIRS OF QUESTIONS ---
 const RotatingEarth = () => {
   const questions = [
-    "WILL AI REDEFINE YOUR BIOLOGY?",
-    "THE 2026 CRASH: TRUTH OR NOISE?",
-    "TRUMP'S NEXT MOVE: GLOBAL IMPACT?",
-    "CRYPTO BLEEDING: THE FINAL SHAKEOUT?",
-    "LIFE-CHANGING TECH: ARE YOU READY?",
-    "PROTESTS & POWER: THE NEW WORLD ORDER?",
-    "IS PRIVACY OFFICIALLY DEAD?",
-    "NEXT GEN ENERGY: FUSION OR FAILURE?",
-    "CAN WE REVERSE AGING BY 2030?",
-    "THE DOLLAR'S FATE: WHAT'S NEXT?",
-    "MARS COLONIZATION: REALITY CHECK?",
-    "QUANTUM COMPUTING: END OF ENCRYPTION?",
-    "THE RISE OF THE SEABOARD MEGALOPOLIS?",
-    "GENETIC EDITING: THE DESIGNER ERA?",
-    "DEEPFAKES: CAN WE TRUST OUR EYES?",
-    "THE FUTURE OF WORK: 4-DAY WEEKS?",
-    "AI GOVERNANCE: WHO IS IN CONTROL?",
-    "UNIVERSAL BASIC INCOME: THE CURE?",
-    "NEURALINK: CONNECTING TO THE GRID?",
-    "THE END OF SCARCITY: PRINTING FOOD?"
+    "WILL AI REDEFINE YOUR BIOLOGY?", "THE 2026 CRASH: TRUTH OR NOISE?",
+    "TRUMP'S NEXT MOVE: GLOBAL IMPACT?", "CRYPTO BLEEDING: THE FINAL SHAKEOUT?",
+    "LIFE-CHANGING TECH: ARE YOU READY?", "PROTESTS & POWER: THE NEW WORLD ORDER?",
+    "IS PRIVACY OFFICIALLY DEAD?", "NEXT GEN ENERGY: FUSION OR FAILURE?",
+    "CAN WE REVERSE AGING BY 2030?", "THE DOLLAR'S FATE: WHAT'S NEXT?",
+    "MARS COLONIZATION: REALITY CHECK?", "QUANTUM COMPUTING: END OF ENCRYPTION?",
+    "THE RISE OF THE SEABOARD MEGALOPOLIS?", "GENETIC EDITING: THE DESIGNER ERA?",
+    "DEEPFAKES: CAN WE TRUST OUR EYES?", "THE FUTURE OF WORK: 4-DAY WEEKS?",
+    "AI GOVERNANCE: WHO IS IN CONTROL?", "UNIVERSAL BASIC INCOME: THE CURE?",
+    "NEURALINK: CONNECTING TO THE GRID?", "THE END OF SCARCITY: PRINTING FOOD?"
   ];
+
+  // Total pairs = 10. Each pair takes 3 seconds total (2.5 visible + 0.5 transition)
+  const totalCycleTime = (questions.length / 2) * 3; 
 
   return (
     <div style={{ height: 'clamp(400px, 60vh, 600px)', width: '100%', cursor: 'grab', marginBottom: '20px' }}>
@@ -49,47 +42,54 @@ const RotatingEarth = () => {
                 roughness={0.1}
                 metalness={0.9}
               />
-              {questions.map((q, i) => (
-                <Html
-                  key={i}
-                  position={[
-                    Math.cos((i / questions.length) * Math.PI * 2) * 3.5,
-                    Math.sin((i / questions.length) * Math.PI * 2) * 2.5,
-                    Math.sin((i / questions.length) * Math.PI) * 1.5
-                  ]}
-                  center
-                >
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ 
-                      opacity: [0, 1, 1, 0], 
-                      scale: [0.9, 1, 1, 0.9] 
-                    }}
-                    transition={{
-                      duration: 3, // Total cycle
-                      repeat: Infinity,
-                      delay: i * 2, // 2-second interval sequence
-                      ease: "easeInOut",
-                      times: [0, 0.1, 0.8, 1] // Locks the "hold" for 2 seconds
-                    }}
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      padding: '12px 24px',
-                      borderRadius: '15px',
-                      boxShadow: '0 10px 30px rgba(0,168,255,0.25)',
-                      border: '1px solid #00a8ff',
-                      whiteSpace: 'nowrap',
-                      color: '#1a1a1a',
-                      fontWeight: '900',
-                      fontSize: '13px',
-                      letterSpacing: '1px',
-                      backdropFilter: 'blur(5px)'
-                    }}
+              {questions.map((q, i) => {
+                const pairIndex = Math.floor(i / 2); // Groups 0-1, 2-3, etc.
+                const isLeft = i % 2 === 0;
+                
+                return (
+                  <Html
+                    key={i}
+                    position={[
+                      isLeft ? -3.5 : 3.5, // Split them left and right
+                      isLeft ? 1 : -1,      // Offset heights slightly
+                      0
+                    ]}
+                    center
                   >
-                    {q}
-                  </motion.div>
-                </Html>
-              ))}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ 
+                        opacity: [0, 1, 1, 0], 
+                        scale: [0.9, 1, 1, 0.9] 
+                      }}
+                      transition={{
+                        duration: 3, // Total visible cycle
+                        repeat: Infinity,
+                        repeatDelay: totalCycleTime - 3, // Waits for all other pairs to finish
+                        delay: pairIndex * 3, // Starts next pair every 3 seconds
+                        ease: "easeInOut",
+                        times: [0, 0.1, 0.85, 1] // Stays solid for ~2.5s
+                      }}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        padding: '12px 24px',
+                        borderRadius: '15px',
+                        boxShadow: '0 10px 30px rgba(0,168,255,0.25)',
+                        border: '1px solid #00a8ff',
+                        whiteSpace: 'nowrap',
+                        color: '#1a1a1a',
+                        fontWeight: '900',
+                        fontSize: '13px',
+                        letterSpacing: '1px',
+                        backdropFilter: 'blur(10px)',
+                        zIndex: 10
+                      }}
+                    >
+                      {q}
+                    </motion.div>
+                  </Html>
+                );
+              })}
             </Sphere>
           </Float>
         </Suspense>
