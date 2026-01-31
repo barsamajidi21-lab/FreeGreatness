@@ -23,7 +23,6 @@ const RotatingEarth = () => {
     "NEURALINK: CONNECTING TO THE GRID?", "THE END OF SCARCITY: PRINTING FOOD?"
   ];
 
-  // Total pairs = 10. Each pair takes 3 seconds total (2.5 visible + 0.5 transition)
   const totalCycleTime = (questions.length / 2) * 3; 
 
   return (
@@ -34,55 +33,21 @@ const RotatingEarth = () => {
         <Suspense fallback={null}>
           <Float speed={3} rotationIntensity={1.5} floatIntensity={2}>
             <Sphere args={[2.2, 64, 64]}>
-              <MeshDistortMaterial
-                color="#00a8ff"
-                attach="material"
-                distort={0.4}
-                speed={2}
-                roughness={0.1}
-                metalness={0.9}
-              />
+              <MeshDistortMaterial color="#00a8ff" attach="material" distort={0.4} speed={2} roughness={0.1} metalness={0.9} />
               {questions.map((q, i) => {
-                const pairIndex = Math.floor(i / 2); // Groups 0-1, 2-3, etc.
+                const pairIndex = Math.floor(i / 2);
                 const isLeft = i % 2 === 0;
-                
                 return (
-                  <Html
-                    key={i}
-                    position={[
-                      isLeft ? -3.5 : 3.5, // Split them left and right
-                      isLeft ? 1 : -1,      // Offset heights slightly
-                      0
-                    ]}
-                    center
-                  >
+                  <Html key={i} position={[isLeft ? -3.5 : 3.5, isLeft ? 1 : -1, 0]} center>
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ 
-                        opacity: [0, 1, 1, 0], 
-                        scale: [0.9, 1, 1, 0.9] 
-                      }}
-                      transition={{
-                        duration: 3, // Total visible cycle
-                        repeat: Infinity,
-                        repeatDelay: totalCycleTime - 3, // Waits for all other pairs to finish
-                        delay: pairIndex * 3, // Starts next pair every 3 seconds
-                        ease: "easeInOut",
-                        times: [0, 0.1, 0.85, 1] // Stays solid for ~2.5s
-                      }}
+                      animate={{ opacity: [0, 1, 1, 0], scale: [0.9, 1, 1, 0.9] }}
+                      transition={{ duration: 3, repeat: Infinity, repeatDelay: totalCycleTime - 3, delay: pairIndex * 3, ease: "easeInOut", times: [0, 0.1, 0.85, 1] }}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        padding: '12px 24px',
-                        borderRadius: '15px',
-                        boxShadow: '0 10px 30px rgba(0,168,255,0.25)',
-                        border: '1px solid #00a8ff',
-                        whiteSpace: 'nowrap',
-                        color: '#1a1a1a',
-                        fontWeight: '900',
-                        fontSize: '13px',
-                        letterSpacing: '1px',
-                        backdropFilter: 'blur(10px)',
-                        zIndex: 10
+                        background: 'rgba(255, 255, 255, 0.95)', padding: '12px 24px', borderRadius: '15px',
+                        boxShadow: '0 10px 30px rgba(0,168,255,0.25)', border: '1px solid #00a8ff',
+                        whiteSpace: 'nowrap', color: '#1a1a1a', fontWeight: '900', fontSize: '13px',
+                        letterSpacing: '1px', backdropFilter: 'blur(10px)', zIndex: 10
                       }}
                     >
                       {q}
@@ -110,6 +75,37 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageContext.Provider value={{ lang, setLang }}>
+        {/* INJECTING THE LIVING SEARCH BAR STYLES */}
+        <style>{`
+          @keyframes bluePulse {
+            0% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
+            50% { box-shadow: 0 0 25px rgba(0, 168, 255, 0.5), 0 8px 25px rgba(0,0,0,0.1); transform: translateY(-3px); }
+            100% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
+          }
+          .living-search {
+            width: clamp(300px, 80vw, 850px); /* Massive, high-impact width */
+            padding: 24px 40px;
+            font-size: 20px;
+            border-radius: 60px;
+            border: 2px solid rgba(0, 168, 255, 0.1);
+            background: white;
+            outline: none;
+            transition: all 0.4s ease;
+            animation: bluePulse 4s infinite ease-in-out;
+            font-weight: 600;
+            text-align: center;
+            color: #1a1a1a;
+          }
+          .living-search:focus {
+            border-color: #00a8ff;
+            background: #fdfdff;
+          }
+          .living-search::placeholder {
+            color: #b2bec3;
+            letter-spacing: 1px;
+          }
+        `}</style>
+
         <div style={{ minHeight: '100vh', backgroundColor: '#f0f7ff', color: '#2d3436', fontFamily: 'system-ui, sans-serif' }}>
           
           <header style={{ 
@@ -137,16 +133,14 @@ export default function App() {
 
           <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
             
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '60px' }}>
-              <div className="search-wrapper">
-                <input 
-                  type="text" 
-                  placeholder="Search global data..." 
-                  className="shining-search" 
-                  value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '80px' }}>
+              <input 
+                type="text" 
+                placeholder="SEARCH THE GLOBAL STREAM..." 
+                className="living-search" 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
 
             <AnimatePresence mode="wait">
