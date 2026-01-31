@@ -8,7 +8,6 @@ import { OrbitControls, Sphere, MeshDistortMaterial, Float, Html } from "@react-
 
 const queryClient = new QueryClient();
 
-// --- THE HOOK: SYNCED PAIRS OF QUESTIONS ---
 const RotatingEarth = () => {
   const questions = [
     "WILL AI REDEFINE YOUR BIOLOGY?", "THE 2026 CRASH: TRUTH OR NOISE?",
@@ -26,7 +25,7 @@ const RotatingEarth = () => {
   const totalCycleTime = (questions.length / 2) * 3; 
 
   return (
-    <div style={{ height: 'clamp(400px, 60vh, 600px)', width: '100%', cursor: 'grab', marginBottom: '20px' }}>
+    <div style={{ height: 'clamp(400px, 60vh, 550px)', width: '100%', cursor: 'grab', marginBottom: '20px' }}>
       <Canvas camera={{ position: [0, 0, 6] }}>
         <ambientLight intensity={1.5} />
         <pointLight position={[10, 10, 10]} />
@@ -75,18 +74,17 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageContext.Provider value={{ lang, setLang }}>
-        {/* INJECTING THE LIVING SEARCH BAR STYLES */}
         <style>{`
           @keyframes bluePulse {
             0% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
-            50% { box-shadow: 0 0 25px rgba(0, 168, 255, 0.5), 0 8px 25px rgba(0,0,0,0.1); transform: translateY(-3px); }
+            50% { box-shadow: 0 0 20px rgba(0, 168, 255, 0.4), 0 8px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
             100% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
           }
           .living-search {
-            width: clamp(300px, 80vw, 850px); /* Massive, high-impact width */
-            padding: 24px 40px;
-            font-size: 20px;
-            border-radius: 60px;
+            width: clamp(280px, 70vw, 650px); 
+            padding: 20px 35px;
+            font-size: 17px;
+            border-radius: 50px;
             border: 2px solid rgba(0, 168, 255, 0.1);
             background: white;
             outline: none;
@@ -94,15 +92,6 @@ export default function App() {
             animation: bluePulse 4s infinite ease-in-out;
             font-weight: 600;
             text-align: center;
-            color: #1a1a1a;
-          }
-          .living-search:focus {
-            border-color: #00a8ff;
-            background: #fdfdff;
-          }
-          .living-search::placeholder {
-            color: #b2bec3;
-            letter-spacing: 1px;
           }
         `}</style>
 
@@ -133,15 +122,17 @@ export default function App() {
 
           <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
             
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '80px' }}>
-              <input 
-                type="text" 
-                placeholder="SEARCH THE GLOBAL STREAM..." 
-                className="living-search" 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+            {view !== "mission" && view !== "advertise" && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '60px' }}>
+                <input 
+                  type="text" 
+                  placeholder="SEARCH THE GLOBAL STREAM..." 
+                  className="living-search" 
+                  value={searchQuery} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            )}
 
             <AnimatePresence mode="wait">
               {view === "home" && (
@@ -149,35 +140,44 @@ export default function App() {
                   <RotatingEarth />
                   <h2 style={{ fontSize: 'clamp(40px, 8vw, 72px)', fontWeight: '900', color: '#1a1a1a', marginBottom: '10px' }}>FREE GREATNESS</h2>
                   <p style={{ color: '#00a8ff', fontSize: '14px', fontWeight: '800', letterSpacing: '10px', marginBottom: '50px' }}>CLARITY // POWER // ACCESS</p>
-                  
-                  <div style={{ maxWidth: '750px', margin: '0 auto', padding: '40px', borderRadius: '30px', background: 'white', boxShadow: '0 15px 50px rgba(0,0,0,0.06)' }}>
-                    <p style={{ fontSize: '1.2rem', color: '#555', fontStyle: 'italic' }}>
-                      "FreeGreatness is the world's most accessible intelligence stream. We provide the blueprint for the next 24 hours."
-                    </p>
-                  </div>
-                  
                   <button onClick={() => setView("intelligence")} style={{
-                    marginTop: '60px', padding: '22px 70px', backgroundColor: '#00a8ff', color: '#fff', 
-                    borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '16px',
-                    boxShadow: '0 10px 30px rgba(0, 168, 255, 0.4)', transition: '0.3s'
+                    padding: '22px 70px', backgroundColor: '#00a8ff', color: '#fff', borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '16px', boxShadow: '0 10px 30px rgba(0, 168, 255, 0.4)'
                   }}>ACCESS THE GLOBAL FEED</button>
                 </motion.div>
               )}
 
               {view === "intelligence" && (
-                <motion.div key="news" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                <motion.div key="intelligence" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', overflowX: 'auto', paddingBottom: '15px' }}>
                     {categories.map(cat => (
                       <button key={cat} onClick={() => setCategory(cat)} style={{
-                        padding: '12px 25px', borderRadius: '50px',
-                        background: category === cat ? '#00a8ff' : '#fff',
-                        color: category === cat ? '#fff' : '#636e72', 
-                        border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-                        cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase'
+                        padding: '12px 25px', borderRadius: '50px', background: category === cat ? '#00a8ff' : '#fff', color: category === cat ? '#fff' : '#636e72', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.05)', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase'
                       }}>{cat}</button>
                     ))}
                   </div>
                   <Feed key={category} category={category} searchBarQuery={searchQuery} />
+                </motion.div>
+              )}
+
+              {view === "advertise" && (
+                <motion.div key="advertise" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ textAlign: 'center', padding: '60px 20px' }}>
+                  <h2 style={{ fontSize: '48px', fontWeight: '900' }}>PARTNER WITH GREATNESS</h2>
+                  <p style={{ color: '#636e72', fontSize: '20px', maxWidth: '700px', margin: '20px auto' }}>Put your brand in front of the world's most informed minds. Join our global intelligence stream.</p>
+                  <div style={{ marginTop: '40px', padding: '40px', background: 'white', borderRadius: '30px', display: 'inline-block', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>
+                    <p style={{ fontWeight: 'bold', fontSize: '18px' }}>Inquiries: partners@freegreatness.com</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {view === "mission" && (
+                <motion.div key="mission" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ padding: '60px 20px' }}>
+                  <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '30px' }}>OUR MISSION</h2>
+                    <p style={{ fontSize: '22px', lineHeight: '1.6', color: '#2d3436' }}>
+                      At FreeGreatness, we believe that high-level intelligence shouldn't be gated by paywalls or complex jargon. 
+                      Our mission is to provide every individual with the <strong>clarity</strong> and <strong>power</strong> to navigate the next 24 hours of global change.
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
