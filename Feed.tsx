@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import ContentCard from "./ContentCard"; 
 import { motion } from "framer-motion";
 
-// Added searchBarQuery to the props
 export default function Feed({ category, searchBarQuery }: { category: string, searchBarQuery: string }) {
   const { data: allNews, isLoading, error } = useQuery({
     queryKey: ["bulk-intel-stream"],
@@ -20,6 +19,7 @@ export default function Feed({ category, searchBarQuery }: { category: string, s
 
       const rawNews = parsedData.data || [];
 
+      // Filter duplicates and short descriptions
       return rawNews.filter((item: any, index: number, self: any[]) =>
         index === self.findIndex((t) => t.title === item.title) &&
         (item.description && item.description.length > 40)
@@ -30,8 +30,6 @@ export default function Feed({ category, searchBarQuery }: { category: string, s
     retry: false
   });
 
-  // --- ENHANCED FILTERING ---
-  // This now checks BOTH the Category AND the Search Bar text
   const filteredData = allNews?.filter(item => {
     const matchesCategory = category === "general" ? true : item.category === category;
     const matchesSearch = item.title.toLowerCase().includes(searchBarQuery.toLowerCase()) || 
@@ -41,25 +39,26 @@ export default function Feed({ category, searchBarQuery }: { category: string, s
   }) || [];
 
   if (isLoading) return (
-    <div style={{ textAlign: 'center', padding: '100px', color: '#00a8ff', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+    <div style={{ textAlign: 'center', padding: '60px', color: '#00a8ff', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
       Gathering Intelligence...
     </div>
   );
 
   if (error) return (
-    <div style={{ textAlign: 'center', color: '#ff4444', padding: '50px', borderRadius: '20px', background: '#fff' }}>
+    <div style={{ textAlign: 'center', color: '#ff4444', padding: '30px', borderRadius: '20px', background: '#fff' }}>
       [!] CONNECTION ERROR: {error instanceof Error ? error.message.toUpperCase() : "INTEL_LINK_BROKEN"}
     </div>
   );
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'grid', gap: '25px' }}>
+    // Reduced gap from 25px to 12px for high-density feel
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'grid', gap: '12px' }}>
       {filteredData.length > 0 ? (
         filteredData.map((item: any, i: number) => (
           <ContentCard key={i} item={item} sourceUrl={item.url} />
         ))
       ) : (
-        <div style={{ color: '#636e72', textAlign: 'center', padding: '100px', background: 'white', borderRadius: '30px' }}>
+        <div style={{ color: '#636e72', textAlign: 'center', padding: '60px', background: 'white', borderRadius: '20px' }}>
           No intelligence found matching: "{searchBarQuery}"
         </div>
       )}

@@ -25,27 +25,27 @@ const RotatingEarth = () => {
   const totalCycleTime = (questions.length / 2) * 3; 
 
   return (
-    <div style={{ height: 'clamp(400px, 60vh, 550px)', width: '100%', cursor: 'grab', marginBottom: '20px' }}>
-      <Canvas camera={{ position: [0, 0, 6] }}>
+    <div style={{ height: '350px', width: '100%', cursor: 'grab', marginBottom: '10px' }}>
+      <Canvas camera={{ position: [0, 0, 5.5] }}>
         <ambientLight intensity={1.5} />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={null}>
           <Float speed={3} rotationIntensity={1.5} floatIntensity={2}>
-            <Sphere args={[2.2, 64, 64]}>
+            <Sphere args={[2, 64, 64]}>
               <MeshDistortMaterial color="#00a8ff" attach="material" distort={0.4} speed={2} roughness={0.1} metalness={0.9} />
               {questions.map((q, i) => {
                 const pairIndex = Math.floor(i / 2);
                 const isLeft = i % 2 === 0;
                 return (
-                  <Html key={i} position={[isLeft ? -3.5 : 3.5, isLeft ? 1 : -1, 0]} center>
+                  <Html key={i} position={[isLeft ? -3.2 : 3.2, isLeft ? 0.8 : -0.8, 0]} center>
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: [0, 1, 1, 0], scale: [0.9, 1, 1, 0.9] }}
                       transition={{ duration: 3, repeat: Infinity, repeatDelay: totalCycleTime - 3, delay: pairIndex * 3, ease: "easeInOut", times: [0, 0.1, 0.85, 1] }}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.95)', padding: '12px 24px', borderRadius: '15px',
-                        boxShadow: '0 10px 30px rgba(0,168,255,0.25)', border: '1px solid #00a8ff',
-                        whiteSpace: 'nowrap', color: '#1a1a1a', fontWeight: '900', fontSize: '13px',
+                        background: 'rgba(255, 255, 255, 0.95)', padding: '10px 18px', borderRadius: '12px',
+                        boxShadow: '0 8px 20px rgba(0,168,255,0.2)', border: '1px solid #00a8ff',
+                        whiteSpace: 'nowrap', color: '#1a1a1a', fontWeight: '900', fontSize: '11px',
                         letterSpacing: '1px', backdropFilter: 'blur(10px)', zIndex: 10
                       }}
                     >
@@ -76,14 +76,14 @@ export default function App() {
       <LanguageContext.Provider value={{ lang, setLang }}>
         <style>{`
           @keyframes bluePulse {
-            0% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
-            50% { box-shadow: 0 0 20px rgba(0, 168, 255, 0.4), 0 8px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
-            100% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(0,0,0,0.05); transform: translateY(0px); }
+            0% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.1); transform: translateY(0px); }
+            50% { box-shadow: 0 0 15px rgba(0, 168, 255, 0.3); transform: translateY(-1px); }
+            100% { box-shadow: 0 0 10px rgba(0, 168, 255, 0.1); transform: translateY(0px); }
           }
           .living-search {
-            width: clamp(280px, 70vw, 650px); 
-            padding: 20px 35px;
-            font-size: 17px;
+            width: clamp(260px, 60vw, 550px); 
+            padding: 15px 25px;
+            font-size: 15px;
             border-radius: 50px;
             border: 2px solid rgba(0, 168, 255, 0.1);
             background: white;
@@ -95,16 +95,16 @@ export default function App() {
           }
           .ad-card {
             background: white;
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0, 168, 255, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0, 168, 255, 0.08);
             flex: 1;
             min-width: 250px;
             transition: 0.3s;
           }
           .ad-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             border-color: #00a8ff;
           }
         `}</style>
@@ -112,32 +112,32 @@ export default function App() {
         <div style={{ minHeight: '100vh', backgroundColor: '#f0f7ff', color: '#2d3436', fontFamily: 'system-ui, sans-serif' }}>
           
           <header style={{ 
-            padding: '20px 40px', backgroundColor: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(15px)',
+            padding: '15px 40px', backgroundColor: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(15px)',
             position: 'sticky', top: 0, zIndex: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             boxShadow: '0 2px 20px rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0, 168, 255, 0.1)'
           }}>
             <div onClick={() => setView("home")} style={{ cursor: 'pointer' }}>
-              <div style={{ fontSize: '26px', fontWeight: '900', color: '#00a8ff' }}>FreeGreatness</div>
-              <div style={{ fontSize: '10px', color: '#636e72', fontWeight: 'bold' }}>GLOBAL INTELLIGENCE</div>
+              <div style={{ fontSize: '24px', fontWeight: '900', color: '#00a8ff' }}>FreeGreatness</div>
+              <div style={{ fontSize: '9px', color: '#636e72', fontWeight: 'bold' }}>GLOBAL INTELLIGENCE</div>
             </div>
-            <nav style={{ display: 'flex', gap: '25px' }}>
+            <nav style={{ display: 'flex', gap: '20px' }}>
               {["HOME", "INTELLIGENCE", "ADVERTISE", "MISSION"].map(item => (
                 <button key={item} onClick={() => setView(item.toLowerCase())}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
                     color: view === item.toLowerCase() ? '#00a8ff' : '#636e72',
-                    fontSize: '13px', fontWeight: '700',
-                    borderBottom: view === item.toLowerCase() ? '3px solid #00a8ff' : '3px solid transparent'
+                    fontSize: '12px', fontWeight: '700',
+                    borderBottom: view === item.toLowerCase() ? '2px solid #00a8ff' : '2px solid transparent'
                   }}
                 >{item}</button>
               ))}
             </nav>
           </header>
 
-          <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+          <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px' }}>
             
             {view !== "mission" && view !== "advertise" && (
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '60px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
                 <input 
                   type="text" 
                   placeholder="SEARCH THE GLOBAL STREAM..." 
@@ -152,20 +152,20 @@ export default function App() {
               {view === "home" && (
                 <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ textAlign: 'center' }}>
                   <RotatingEarth />
-                  <h2 style={{ fontSize: 'clamp(40px, 8vw, 72px)', fontWeight: '900', color: '#1a1a1a', marginBottom: '10px' }}>FREE GREATNESS</h2>
-                  <p style={{ color: '#00a8ff', fontSize: '14px', fontWeight: '800', letterSpacing: '10px', marginBottom: '50px' }}>CLARITY // POWER // ACCESS</p>
+                  <h2 style={{ fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: '900', color: '#1a1a1a', margin: '0 0 5px 0' }}>FREE GREATNESS</h2>
+                  <p style={{ color: '#00a8ff', fontSize: '13px', fontWeight: '800', letterSpacing: '8px', marginBottom: '25px' }}>CLARITY</p>
                   <button onClick={() => setView("intelligence")} style={{
-                    padding: '22px 70px', backgroundColor: '#00a8ff', color: '#fff', borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '16px', boxShadow: '0 10px 30px rgba(0, 168, 255, 0.4)'
+                    padding: '18px 50px', backgroundColor: '#00a8ff', color: '#fff', borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '15px', boxShadow: '0 8px 25px rgba(0, 168, 255, 0.3)'
                   }}>ACCESS THE GLOBAL FEED</button>
                 </motion.div>
               )}
 
               {view === "intelligence" && (
-                <motion.div key="intelligence" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', overflowX: 'auto', paddingBottom: '15px' }}>
+                <motion.div key="intelligence" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '10px' }}>
                     {categories.map(cat => (
                       <button key={cat} onClick={() => setCategory(cat)} style={{
-                        padding: '12px 25px', borderRadius: '50px', background: category === cat ? '#00a8ff' : '#fff', color: category === cat ? '#fff' : '#636e72', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.05)', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase'
+                        padding: '10px 20px', borderRadius: '50px', background: category === cat ? '#00a8ff' : '#fff', color: category === cat ? '#fff' : '#636e72', border: 'none', boxShadow: '0 3px 10px rgba(0,0,0,0.03)', cursor: 'pointer', fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase'
                       }}>{cat}</button>
                     ))}
                   </div>
@@ -174,32 +174,31 @@ export default function App() {
               )}
 
               {view === "advertise" && (
-                <motion.div key="advertise" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <h2 style={{ fontSize: '48px', fontWeight: '900', color: '#1a1a1a' }}>PARTNER WITH GREATNESS</h2>
-                  <p style={{ color: '#636e72', fontSize: '20px', maxWidth: '750px', margin: '20px auto' }}>Put your brand in front of the world's most informed minds. Join our global intelligence stream.</p>
+                <motion.div key="advertise" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ textAlign: 'center', padding: '30px 20px' }}>
+                  <h2 style={{ fontSize: '42px', fontWeight: '900', color: '#1a1a1a' }}>PARTNER WITH GREATNESS</h2>
+                  <p style={{ color: '#636e72', fontSize: '18px', maxWidth: '700px', margin: '15px auto' }}>Put your brand in front of the world's most informed minds.</p>
                   
-                  <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', marginTop: '60px', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '40px', textAlign: 'left' }}>
                     <div className="ad-card">
-                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>🖼️</div>
-                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Visual Impact</h3>
-                      <p style={{ color: '#636e72', fontSize: '14px' }}>Showcase your products through high-resolution image banners integrated directly into the news feed.</p>
+                      <div style={{ fontSize: '20px', marginBottom: '10px' }}>🖼️</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff', fontSize: '16px' }}>Visual Impact</h3>
+                      <p style={{ color: '#636e72', fontSize: '13px' }}>Image banners integrated into the news feed.</p>
                     </div>
                     <div className="ad-card">
-                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>🎥</div>
-                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Video Spotlight</h3>
-                      <p style={{ color: '#636e72', fontSize: '14px' }}>Capture attention with cinematic video ads that play seamlessly as users scroll through global intelligence.</p>
+                      <div style={{ fontSize: '20px', marginBottom: '10px' }}>🎥</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff', fontSize: '16px' }}>Video Spotlight</h3>
+                      <p style={{ color: '#636e72', fontSize: '13px' }}>Cinematic video ads for maximum engagement.</p>
                     </div>
                     <div className="ad-card">
-                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>✍️</div>
-                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Sponsored Intel</h3>
-                      <p style={{ color: '#636e72', fontSize: '14px' }}>Native text ads that look like intelligence reports, providing deep value while promoting your mission.</p>
+                      <div style={{ fontSize: '20px', marginBottom: '10px' }}>✍️</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff', fontSize: '16px' }}>Sponsored Intel</h3>
+                      <p style={{ color: '#636e72', fontSize: '13px' }}>Native text ads that provide deep value.</p>
                     </div>
                   </div>
 
-                  <div style={{ marginTop: '80px', padding: '50px', background: 'white', borderRadius: '40px', boxShadow: '0 20px 60px rgba(0,0,0,0.08)', border: '2px solid #00a8ff' }}>
-                    <h4 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '10px' }}>READY TO LAUNCH?</h4>
-                    <p style={{ color: '#636e72', marginBottom: '30px' }}>Secure your spot in the 2026 intelligence stream.</p>
-                    <a href="mailto:partners@freegreatness.com" style={{ textDecoration: 'none', color: '#fff', background: '#00a8ff', padding: '18px 40px', borderRadius: '50px', fontWeight: '900', fontSize: '18px', boxShadow: '0 10px 30px rgba(0, 168, 255, 0.3)' }}>
+                  <div style={{ marginTop: '50px', padding: '40px', background: 'white', borderRadius: '30px', boxShadow: '0 15px 40px rgba(0,0,0,0.05)', border: '1px solid #00a8ff' }}>
+                    <h4 style={{ fontSize: '22px', fontWeight: '900', marginBottom: '10px' }}>READY TO LAUNCH?</h4>
+                    <a href="mailto:partners@freegreatness.com" style={{ textDecoration: 'none', color: '#fff', background: '#00a8ff', padding: '15px 35px', borderRadius: '50px', fontWeight: '900', fontSize: '16px', display: 'inline-block', marginTop: '10px' }}>
                       partners@freegreatness.com
                     </a>
                   </div>
@@ -207,12 +206,12 @@ export default function App() {
               )}
 
               {view === "mission" && (
-                <motion.div key="mission" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ padding: '60px 20px' }}>
-                  <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '30px' }}>OUR MISSION</h2>
-                    <p style={{ fontSize: '22px', lineHeight: '1.6', color: '#2d3436' }}>
-                      At FreeGreatness, we believe that high-level intelligence shouldn't be gated by paywalls or complex jargon. 
-                      Our mission is to provide every individual with the <strong>clarity</strong> and <strong>power</strong> to navigate the next 24 hours of global change.
+                <motion.div key="mission" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ padding: '40px 20px', textAlign: 'center' }}>
+                  <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <h2 style={{ fontSize: '42px', fontWeight: '900', marginBottom: '20px' }}>OUR MISSION</h2>
+                    <p style={{ fontSize: '20px', lineHeight: '1.6', color: '#2d3436' }}>
+                      At FreeGreatness, we believe that high-level intelligence shouldn't be gated. 
+                      Our mission is to provide you with <strong>clarity</strong> to navigate global change.
                     </p>
                   </div>
                 </motion.div>
