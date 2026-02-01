@@ -156,7 +156,7 @@ export default function App() {
                   <p style={{ color: '#00a8ff', fontSize: '13px', fontWeight: '800', letterSpacing: '8px', marginBottom: '25px' }}>CLARITY</p>
                   <button onClick={() => setView("intelligence")} style={{
                     padding: '18px 50px', backgroundColor: '#00a8ff', color: '#fff', borderRadius: '50px', border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '15px', boxShadow: '0 8px 25px rgba(0, 168, 255, 0.3)'
-                  }}>ACCESS THE GLOBAL FEED</button>
+                  }}>FIGURE OUT</button>
                 </motion.div>
               )}
 
