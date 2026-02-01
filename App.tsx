@@ -93,6 +93,20 @@ export default function App() {
             font-weight: 600;
             text-align: center;
           }
+          .ad-card {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 168, 255, 0.1);
+            flex: 1;
+            min-width: 250px;
+            transition: 0.3s;
+          }
+          .ad-card:hover {
+            transform: translateY(-10px);
+            border-color: #00a8ff;
+          }
         `}</style>
 
         <div style={{ minHeight: '100vh', backgroundColor: '#f0f7ff', color: '#2d3436', fontFamily: 'system-ui, sans-serif' }}>
@@ -161,10 +175,33 @@ export default function App() {
 
               {view === "advertise" && (
                 <motion.div key="advertise" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <h2 style={{ fontSize: '48px', fontWeight: '900' }}>PARTNER WITH GREATNESS</h2>
-                  <p style={{ color: '#636e72', fontSize: '20px', maxWidth: '700px', margin: '20px auto' }}>Put your brand in front of the world's most informed minds. Join our global intelligence stream.</p>
-                  <div style={{ marginTop: '40px', padding: '40px', background: 'white', borderRadius: '30px', display: 'inline-block', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '18px' }}>Inquiries: partners@freegreatness.com</p>
+                  <h2 style={{ fontSize: '48px', fontWeight: '900', color: '#1a1a1a' }}>PARTNER WITH GREATNESS</h2>
+                  <p style={{ color: '#636e72', fontSize: '20px', maxWidth: '750px', margin: '20px auto' }}>Put your brand in front of the world's most informed minds. Join our global intelligence stream.</p>
+                  
+                  <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', marginTop: '60px', textAlign: 'left' }}>
+                    <div className="ad-card">
+                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>🖼️</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Visual Impact</h3>
+                      <p style={{ color: '#636e72', fontSize: '14px' }}>Showcase your products through high-resolution image banners integrated directly into the news feed.</p>
+                    </div>
+                    <div className="ad-card">
+                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>🎥</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Video Spotlight</h3>
+                      <p style={{ color: '#636e72', fontSize: '14px' }}>Capture attention with cinematic video ads that play seamlessly as users scroll through global intelligence.</p>
+                    </div>
+                    <div className="ad-card">
+                      <div style={{ fontSize: '24px', marginBottom: '15px' }}>✍️</div>
+                      <h3 style={{ fontWeight: '900', color: '#00a8ff' }}>Sponsored Intel</h3>
+                      <p style={{ color: '#636e72', fontSize: '14px' }}>Native text ads that look like intelligence reports, providing deep value while promoting your mission.</p>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: '80px', padding: '50px', background: 'white', borderRadius: '40px', boxShadow: '0 20px 60px rgba(0,0,0,0.08)', border: '2px solid #00a8ff' }}>
+                    <h4 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '10px' }}>READY TO LAUNCH?</h4>
+                    <p style={{ color: '#636e72', marginBottom: '30px' }}>Secure your spot in the 2026 intelligence stream.</p>
+                    <a href="mailto:partners@freegreatness.com" style={{ textDecoration: 'none', color: '#fff', background: '#00a8ff', padding: '18px 40px', borderRadius: '50px', fontWeight: '900', fontSize: '18px', boxShadow: '0 10px 30px rgba(0, 168, 255, 0.3)' }}>
+                      partners@freegreatness.com
+                    </a>
                   </div>
                 </motion.div>
               )}
