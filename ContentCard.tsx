@@ -1,7 +1,20 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { generateIntelHook } from "./aiService"; // Make sure to create aiService.ts first!
 
-// Added 'priority' for speed and 'item.hook' for the AI feature
 export default function ContentCard({ item, sourceUrl, priority }: { item: any, sourceUrl: string, priority?: boolean }) {
+  const [aiHook, setAiHook] = useState(item.hook || "Analyzing impact...");
+
+  // AI Hook Trigger
+  useEffect(() => {
+    // Only fetch if we don't already have a custom hook
+    if (!item.hook || item.hook === "Analyzing impact...") {
+      generateIntelHook(item.title).then((result) => {
+        setAiHook(result);
+      });
+    }
+  }, [item.title, item.hook]);
+
   if (!item) return null;
 
   const cleanTitle = (title: string) => {
@@ -36,14 +49,13 @@ export default function ContentCard({ item, sourceUrl, priority }: { item: any, 
           <img 
             src={item.image} 
             alt="visual intelligence" 
-            loading={priority ? "eager" : "lazy"} // SPEED: Loads first 3 immediately, delays others
+            loading={priority ? "eager" : "lazy"}
             style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px' }} 
           />
         </div>
       )}
 
       <div style={{ padding: '15px 20px' }}>
-        {/* CATEGORY & DATE */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <span style={{ fontWeight: '800', color: '#00a8ff', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
             {item.category || 'GLOBAL'}
@@ -51,35 +63,36 @@ export default function ContentCard({ item, sourceUrl, priority }: { item: any, 
           {formattedDate && <small style={{ color: '#b2bec3', fontSize: '10px' }}>{formattedDate}</small>}
         </div>
 
-        {/* --- NEW: AI HOOK SECTION --- */}
-        {/* This is the customized sentence that captures interest */}
+        {/* --- AI HOOK SECTION (ACTIVE) --- */}
         <div style={{ marginBottom: '8px' }}>
-          <span style={{ 
-            color: '#1a1a1a', 
-            fontSize: '15px', 
-            fontWeight: '900', 
-            fontStyle: 'italic',
-            background: 'linear-gradient(90deg, #f0f7ff, #ffffff)',
-            padding: '4px 8px',
-            borderRadius: '6px',
-            borderLeft: '3px solid #00a8ff',
-            display: 'inline-block'
-          }}>
-            {item.hook || "Analyzing impact..."} 
-          </span>
+          <motion.span 
+            key={aiHook}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ 
+              color: '#1a1a1a', 
+              fontSize: '15px', 
+              fontWeight: '900', 
+              fontStyle: 'italic',
+              background: 'linear-gradient(90deg, #f0f7ff, #ffffff)',
+              padding: '4px 8px',
+              borderRadius: '6px',
+              borderLeft: '3px solid #00a8ff',
+              display: 'inline-block'
+            }}
+          >
+            {aiHook} 
+          </motion.span>
         </div>
 
-        {/* HEADLINE */}
         <h2 style={{ fontSize: '18px', margin: '0 0 8px 0', fontWeight: '800', color: '#1a1a1a', lineHeight: '1.3' }}>
           {cleanTitle(item.title)}
         </h2>
 
-        {/* DESCRIPTION */}
         <p style={{ fontSize: '14px', color: '#636e72', marginBottom: '15px', lineHeight: '1.5' }}>
           {item.description}
         </p>
         
-        {/* SOURCE & ACTION */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f8f9fa', paddingTop: '12px' }}>
           <div style={{ color: '#2d3436', fontWeight: '700', fontSize: '11px', textTransform: 'uppercase' }}>
             {item.source || 'Global Intel'}
@@ -95,7 +108,6 @@ export default function ContentCard({ item, sourceUrl, priority }: { item: any, 
           </motion.a>
         </div>
 
-        {/* --- LEGAL DISCLAIMER LABEL --- */}
         <div style={{ 
           marginTop: '15px', 
           paddingTop: '10px', 
