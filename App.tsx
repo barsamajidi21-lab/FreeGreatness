@@ -6,7 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Sphere, MeshDistortMaterial, Float, Html } from "@react-three/drei";
 
-const queryClient = new QueryClient();
+// SPEED: Optimized QueryClient with aggressive staleTime to prevent redundant re-renders
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 10, // 10 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const RotatingEarth = () => {
   const questions = [
@@ -107,9 +115,10 @@ export default function App() {
             transform: translateY(-5px);
             border-color: #00a8ff;
           }
+          footer a { color: #00a8ff; text-decoration: none; font-weight: bold; }
         `}</style>
 
-        <div style={{ minHeight: '100vh', backgroundColor: '#f0f7ff', color: '#2d3436', fontFamily: 'system-ui, sans-serif' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#f0f7ff', color: '#2d3436', fontFamily: 'system-ui, sans-serif', display: 'flex', flexDirection: 'column' }}>
           
           <header style={{ 
             padding: '15px 40px', backgroundColor: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(15px)',
@@ -134,7 +143,7 @@ export default function App() {
             </nav>
           </header>
 
-          <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px' }}>
+          <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px', flex: 1, width: '100%' }}>
             
             {view !== "mission" && view !== "advertise" && (
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
@@ -195,13 +204,6 @@ export default function App() {
                       <p style={{ color: '#636e72', fontSize: '13px' }}>Native text ads that provide deep value.</p>
                     </div>
                   </div>
-
-                  <div style={{ marginTop: '50px', padding: '40px', background: 'white', borderRadius: '30px', boxShadow: '0 15px 40px rgba(0,0,0,0.05)', border: '1px solid #00a8ff' }}>
-                    <h4 style={{ fontSize: '22px', fontWeight: '900', marginBottom: '10px' }}>READY TO LAUNCH?</h4>
-                    <a href="mailto:partners@freegreatness.com" style={{ textDecoration: 'none', color: '#fff', background: '#00a8ff', padding: '15px 35px', borderRadius: '50px', fontWeight: '900', fontSize: '16px', display: 'inline-block', marginTop: '10px' }}>
-                      partners@freegreatness.com
-                    </a>
-                  </div>
                 </motion.div>
               )}
 
@@ -218,6 +220,30 @@ export default function App() {
               )}
             </AnimatePresence>
           </main>
+
+          {/* --- GLOBAL LEGAL FOOTER --- */}
+          <footer style={{ 
+            backgroundColor: '#fff', 
+            padding: '40px 20px', 
+            borderTop: '1px solid rgba(0, 168, 255, 0.1)', 
+            textAlign: 'center',
+            marginTop: '50px'
+          }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+              <div style={{ fontSize: '18px', fontWeight: '900', color: '#00a8ff', marginBottom: '10px' }}>FREEGREATNESS</div>
+              <p style={{ fontSize: '11px', color: '#95a5a6', lineHeight: '1.6', marginBottom: '20px' }}>
+                <strong>DISCLAIMER:</strong> The intelligence provided on this platform is for informational and educational purposes only. 
+                FreeGreatness does not provide financial, medical, legal, or political advice. All information is gathered from third-party 
+                sources and processed for clarity; however, we do not guarantee the accuracy or completeness of any report. 
+                Always consult with a qualified professional before making significant life or financial decisions based on news content.
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', color: '#636e72' }}>
+                <span>© 2026 FREEGREATNESS</span>
+                <span style={{ cursor: 'pointer' }}>Privacy Policy</span>
+                <span style={{ cursor: 'pointer' }}>Terms of Service</span>
+              </div>
+            </div>
+          </footer>
         </div>
       </LanguageContext.Provider>
     </QueryClientProvider>
