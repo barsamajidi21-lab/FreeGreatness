@@ -1,14 +1,14 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { generateIntelHook } from "./aiService"; // Make sure to create aiService.ts first!
+import { generateIntelHook } from "./aiService"; 
 
 export default function ContentCard({ item, sourceUrl, priority }: { item: any, sourceUrl: string, priority?: boolean }) {
-  const [aiHook, setAiHook] = useState(item.hook || "Analyzing impact...");
+  // Update the default state to match exactly what you see on screen
+  const [aiHook, setAiHook] = useState(item.hook || "Intelligence Analysis Pending...");
 
-  // AI Hook Trigger
   useEffect(() => {
-    // Only fetch if we don't already have a custom hook
-    if (!item.hook || item.hook === "Analyzing impact...") {
+    // FIX: This now triggers if the text is "Intelligence Analysis Pending..."
+    if (!item.hook || aiHook === "Intelligence Analysis Pending...") {
       generateIntelHook(item.title).then((result) => {
         setAiHook(result);
       });
@@ -63,7 +63,6 @@ export default function ContentCard({ item, sourceUrl, priority }: { item: any, 
           {formattedDate && <small style={{ color: '#b2bec3', fontSize: '10px' }}>{formattedDate}</small>}
         </div>
 
-        {/* --- AI HOOK SECTION (ACTIVE) --- */}
         <div style={{ marginBottom: '8px' }}>
           <motion.span 
             key={aiHook}
